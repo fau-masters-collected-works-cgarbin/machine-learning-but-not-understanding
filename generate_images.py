@@ -61,8 +61,9 @@ def test():
     inspect that the image type and pixels values are correct.
     """
     _prepare()
-    _create_square(SQUARE_UPRIGHT_FILE, (2, 2), (29, 2), (2, 29), (29, 29))
-    _display_grayscale_image_hex(SQUARE_UPRIGHT_FILE.format(*(2, 2), *(29, 2), *(2, 29), *(29, 29)))
+    coordinates = ((2, 2), (29, 2), (2, 29), (29, 29))
+    _create_square(SQUARE_UPRIGHT_FILE, *coordinates)
+    _display_grayscale_image_hex(SQUARE_UPRIGHT_FILE.format(*[c for tupl in coordinates for c in tupl]))
 
 
 if __name__ == "__main__":

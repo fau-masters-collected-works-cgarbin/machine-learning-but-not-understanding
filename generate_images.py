@@ -54,8 +54,17 @@ def _display_grayscale_image(file: str):
         print(''.join('{:02x}'.format(p) for p in data[i]))
 
 
-if __name__ == "__main__":
+def _test():
+    """Test code to check that grayscale images are properly generated.
+
+    It creates one image, then displays the pixel values (in hexadecimal), so we can visually
+    inspect that the image type and pixels values are correct.
+    """
     _prepare()
     _create_square(SQUARE_UPRIGHT_FILE, (2, 2), (29, 2), (2, 29), (29, 29))
     _display_grayscale_image(IMAGE_FILE_NAME_TEMPLATE.format(
         SQUARE_UPRIGHT_FILE, *(2, 2), *(29, 2), *(2, 29), *(29, 29)))
+
+
+if __name__ == "__main__":
+    _test()

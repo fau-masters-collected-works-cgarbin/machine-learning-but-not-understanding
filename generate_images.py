@@ -14,13 +14,12 @@ from typing import Tuple
 
 # The directory where the generated images are stored
 IMAGE_DIRECTORY = 'images'
-# The template for the file names: type, top-left, top-right, bottom-left, bottom-right
-IMAGE_FILE_NAME_TEMPLATE = '{}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp'
 # Image height/width (all images are squares)
 IMAGE_SIZE = 64
 
 SQUARE_UPRIGHT = 'square-upright'
-SQUARE_UPRIGHT_FILE = os.path.join(IMAGE_DIRECTORY, SQUARE_UPRIGHT)
+SQUARE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_UPRIGHT,
+                                         '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
 
 
 def _prepare():
@@ -32,6 +31,8 @@ def _create_square(base_name: str, top_left: Tuple[int, ...], top_right: Tuple[i
                    bottom_left: Tuple[int, ...], bottom_right: Tuple[int, ...]):
     """Create a square picture and save it.
 
+    All coordinates are in the Pillow system: the top-left corner of the canvas is (0,0).
+
     Args:
         base_name (str): Base name for the file where the picture will be saved
         top_left (Tuple[int, ...]): [x, y] coordinate for the top-left corner.
@@ -42,11 +43,10 @@ def _create_square(base_name: str, top_left: Tuple[int, ...], top_right: Tuple[i
     im = Image.new(mode='L', size=(IMAGE_SIZE, IMAGE_SIZE), color=255)
     draw = ImageDraw.Draw(im)
     draw.polygon([top_left, top_right, bottom_right, bottom_left], outline=0)
-    im.save(IMAGE_FILE_NAME_TEMPLATE.format(
-        base_name, *top_left, *top_right, *bottom_left, *bottom_right))
+    im.save(base_name.format(*top_left, *top_right, *bottom_left, *bottom_right))
 
 
-def _display_grayscale_image(file: str):
+def _display_grayscale_image_hex(file: str):
     data = image.imread(file)
     print('Data type: {}, shape: {}'.format(data.dtype, data.shape))
     print('Pixels:')
@@ -54,7 +54,7 @@ def _display_grayscale_image(file: str):
         print(''.join('{:02x}'.format(p) for p in data[i]))
 
 
-def _test():
+def test():
     """Test code to check that grayscale images are properly generated.
 
     It creates one image, then displays the pixel values (in hexadecimal), so we can visually
@@ -62,9 +62,8 @@ def _test():
     """
     _prepare()
     _create_square(SQUARE_UPRIGHT_FILE, (2, 2), (29, 2), (2, 29), (29, 29))
-    _display_grayscale_image(IMAGE_FILE_NAME_TEMPLATE.format(
-        SQUARE_UPRIGHT_FILE, *(2, 2), *(29, 2), *(2, 29), *(29, 29)))
+    _display_grayscale_image_hex(SQUARE_UPRIGHT_FILE.format(*(2, 2), *(29, 2), *(2, 29), *(29, 29)))
 
 
 if __name__ == "__main__":
-    _test()
+    test()

@@ -1,4 +1,4 @@
-"""Generate grayscale training images.
+"""Generate grayscale images used in the code.
 
 Sources used to write this code:
 
@@ -14,6 +14,7 @@ import shutil
 from typing import Tuple
 import glob
 import numpy as np
+from sklearn import utils
 
 # The directory where the generated images are stored
 IMAGE_DIRECTORY = 'images'
@@ -143,10 +144,13 @@ def _get_dataset(file_name_pattern: str, label: int, test_set_pct: int, shuffle:
         np.random.shuffle(images_np)
 
     test_set_size = len(images_np) * test_set_pct // 100
-    test_set = images_np[test_set_size:],
-    train_set = images_np[:test_set_size]
-    test_labels = np.full_like(test_set, label, dtype=int)
-    train_labels = np.full_like(train_set, label, dtype=int)
+    train_set = images_np[test_set_size:]
+    test_set = images_np[:test_set_size]
+
+    train_labels = np.empty(train_set.shape[0], dtype=np.uint8)
+    train_labels.fill(label)
+    test_labels = np.empty(test_set.shape[0], dtype=np.uint8)
+    test_labels.fill(label)
 
     return (train_set, train_labels), (test_set, test_labels)
 
@@ -171,6 +175,32 @@ def get_triangle_upright_dataset(test_set_pct: int, shuffle: bool = True):
     return _get_dataset(TRIANGLE_UPRIGHT, LABEL_TRIANGLE, test_set_pct, shuffle)
 
 
+def get_upright_dataset(test_set_pct: int, shuffle: bool = True):
+    """Create the combined dataset of upright squares and triangles.
+
+    This code it no t very efficient. It create copies of images. It's ok for a small dataset. For
+    a larger dataset we may want to work with the file names first and load the images after
+    doing all the array operations.
+
+    Args:
+        test_set_pct (int): The percentage of images to use for the test set.
+        shuffle (bool, optional): Shuffle the images before creating the test set. Defaults to True.
+    """
+    (strainset, strainlabel), (stestset, stestlabel) = get_square_upright_dataset(test_set_pct, shuffle)
+    (ttrainset, ttrainlabel), (ttestset, ttestlabel) = get_triangle_upright_dataset(test_set_pct, shuffle)
+
+    trainset = np.concatenate((strainset, ttrainset), axis=0)
+    trainlabel = np.concatenate((strainlabel, ttrainlabel))
+    testset = np.concatenate((stestset, ttestset), axis=0)
+    testlabel = np.concatenate((stestlabel, ttestlabel))
+
+    # This is not very efficient because it copies data, but it's ok for a small dataset
+    if shuffle:
+        trainset, trainlabel = utils.shuffle(trainset, trainlabel)
+
+    return (trainset, trainlabel), (testset, testlabel)
+
+
 if __name__ == "__main__":
     _prepare()
     # test(True)
@@ -178,7 +208,9 @@ if __name__ == "__main__":
     create_upright_square_dataset()
     create_upright_triangle_dataset()
 
-    (trs, trl), (tss, tsl) = get_square_upright_dataset(10)
-    _display_grayscale_image_hex(trs[0])
-    (trs, trl), (tss, tsl) = get_triangle_upright_dataset(10)
-    _display_grayscale_image_hex(trs[0])
+    # (trs, trl), (tss, tsl) = get_square_upright_dataset(10)
+    # _display_grayscale_image_hex(trs[0])
+    # (trs, trl), (tss, tsl) = get_triangle_upright_dataset(10)
+    # _display_grayscale_image_hex(trs[0])
+
+    (trs, trl), (tss, tsl) = get_upright_dataset(10)

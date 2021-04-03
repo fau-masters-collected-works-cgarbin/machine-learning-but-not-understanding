@@ -161,11 +161,24 @@ def get_square_upright_dataset(test_set_pct: int, shuffle: bool = True):
     return _get_dataset(SQUARE_UPRIGHT, LABEL_SQUARE, test_set_pct, shuffle)
 
 
+def get_triangle_upright_dataset(test_set_pct: int, shuffle: bool = True):
+    """Create the upright triangle train and test sets from the images in the directory.
+
+    Args:
+        test_set_pct (int): The percentage of images to use for the test set.
+        shuffle (bool, optional): Shuffle the images before creating the test set. Defaults to True.
+    """
+    return _get_dataset(TRIANGLE_UPRIGHT, LABEL_TRIANGLE, test_set_pct, shuffle)
+
+
 if __name__ == "__main__":
     _prepare()
     # test(True)
     # test(False)
     create_upright_square_dataset()
     create_upright_triangle_dataset()
+
     (trs, trl), (tss, tsl) = get_square_upright_dataset(10)
+    _display_grayscale_image_hex(trs[0])
+    (trs, trl), (tss, tsl) = get_triangle_upright_dataset(10)
     _display_grayscale_image_hex(trs[0])

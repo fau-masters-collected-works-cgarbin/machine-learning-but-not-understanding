@@ -19,8 +19,8 @@ IMAGE_FILE_NAME_TEMPLATE = '{}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-
 # Image height/width (all images are squares)
 IMAGE_SIZE = 64
 
-SQUARE = 'square'
-SQUARE_IMAGE = os.path.join(IMAGE_DIRECTORY, SQUARE)
+SQUARE_UPRIGHT = 'square-upright'
+SQUARE_UPRIGHT_FILE = os.path.join(IMAGE_DIRECTORY, SQUARE_UPRIGHT)
 
 
 def _prepare():
@@ -28,21 +28,22 @@ def _prepare():
     os.makedirs(IMAGE_DIRECTORY, exist_ok=True)
 
 
-def _create_square(top_left: Tuple[int, ...], top_right: Tuple[int, ...],
+def _create_square(base_name: str, top_left: Tuple[int, ...], top_right: Tuple[int, ...],
                    bottom_left: Tuple[int, ...], bottom_right: Tuple[int, ...]):
     """Create a square picture and save it.
 
     Args:
-        top_left (Tuple[int, ...]): [x, y] Coordinate for the top-left corner.
-        top_right (Tuple[int, ...]): [x, y] Coordinate for the top-right corner.
-        bottom_left (Tuple[int, ...]): [x, y] Coordinate for the bottom-left corner.
-        bottom_right (Tuple[int, ...]): [x, y] Coordinate for the bottom-right corner.
+        base_name (str): Base name for the file where the picture will be saved
+        top_left (Tuple[int, ...]): [x, y] coordinate for the top-left corner.
+        top_right (Tuple[int, ...]): [x, y] coordinate for the top-right corner.
+        bottom_left (Tuple[int, ...]): [x, y] coordinate for the bottom-left corner.
+        bottom_right (Tuple[int, ...]): [x, y] coordinate for the bottom-right corner.
     """
     im = Image.new(mode='L', size=(IMAGE_SIZE, IMAGE_SIZE), color=255)
     draw = ImageDraw.Draw(im)
     draw.polygon([top_left, top_right, bottom_right, bottom_left], outline=0)
     im.save(IMAGE_FILE_NAME_TEMPLATE.format(
-        SQUARE_IMAGE, *top_left, *top_right, *bottom_left, *bottom_right))
+        base_name, *top_left, *top_right, *bottom_left, *bottom_right))
 
 
 def _display_grayscale_image(file: str):
@@ -55,6 +56,6 @@ def _display_grayscale_image(file: str):
 
 if __name__ == "__main__":
     _prepare()
-    _create_square((2, 2), (29, 2), (2, 29), (29, 29))
+    _create_square(SQUARE_UPRIGHT_FILE, (2, 2), (29, 2), (2, 29), (29, 29))
     _display_grayscale_image(IMAGE_FILE_NAME_TEMPLATE.format(
-        SQUARE_IMAGE, *(2, 2), *(29, 2), *(2, 29), *(29, 29)))
+        SQUARE_UPRIGHT_FILE, *(2, 2), *(29, 2), *(2, 29), *(29, 29)))

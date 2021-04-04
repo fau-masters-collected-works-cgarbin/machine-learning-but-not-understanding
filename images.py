@@ -235,7 +235,7 @@ def get_upright_dataset(test_set_pct: int, shuffle: bool = True):
 
 def get_class_labels():
     """Returns the class names indexed by their values."""
-    return ['Square (upright)', 'Triangle (upright']
+    return ['Square', 'Triangle']
 
 
 if __name__ == "__main__":

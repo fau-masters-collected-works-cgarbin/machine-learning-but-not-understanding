@@ -20,9 +20,9 @@ from sklearn import utils
 IMAGE_DIRECTORY = 'images'
 # Canvas height/width (all images are squares)
 CANVAS_SIZE = 64
-BACKGROUND_COLOR_BLACK = 255
-BACKGROUND_COLOR_GREEN = 181
-BACKGROUND_COLOR_BLACK = 138
+BACKGROUND_COLOR_WHITE = 255
+BACKGROUND_COLOR_GRAY_LIGHT = 128
+BACKGROUND_COLOR_GRAY_DARK = 64
 
 SQUARE_UPRIGHT = 'square-upright'
 SQUARE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_UPRIGHT,
@@ -30,11 +30,20 @@ SQUARE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_UP
 SQUARE_ROTATED = 'square-rotated'
 SQUARE_ROTATED_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_ROTATED,
                                          '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
+SQUARE_GRAY_DARK = 'square-gray-dark'
+SQUARE_GRAY_DARK_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_GRAY_DARK,
+                                           '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
+SQUARE_GRAY_LIGHT = 'square-gray-light'
+SQUARE_GRAY_LIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_GRAY_LIGHT,
+                                            '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
 SQUARE_SIDE = 10
 
 TRIANGLE_UPRIGHT = 'triangle-upright'
 TRIANGLE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, TRIANGLE_UPRIGHT,
                                            '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
+TRIANGLE_GRAY_LIGHT = 'triangle-gray-dark'
+TRIANGLE_GRAY_LIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, TRIANGLE_GRAY_LIGHT,
+                                              '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
 TRIANGLE_HEIGHT = 20
 TRIANGLE_BASE = 21
 
@@ -64,7 +73,7 @@ def _create_square(base_name: str, corner1: Tuple[int, ...], corner2: Tuple[int,
         corner1..4 (Tuple[int, ...]): [x, y] coordinate of each corner, in order.
         background_color
     """
-    im = Image.new(mode='L', size=(CANVAS_SIZE, CANVAS_SIZE), color=background)
+    im = Image.new(mode='P', size=(CANVAS_SIZE, CANVAS_SIZE), color=background)
     draw = ImageDraw.Draw(im)
     draw.polygon([corner1, corner2, corner3, corner4], outline=0)
     im.save(base_name.format(*corner1, *corner2, *corner3, *corner4))
@@ -188,27 +197,32 @@ def _test(type: str):
     """
     if type == 'square upright':
         coordinates = ((2, 2), (29, 2), (29, 29), (2, 29))
-        _create_square(SQUARE_UPRIGHT_FILE, *coordinates, BACKGROUND_COLOR_BLACK)
+        _create_square(SQUARE_UPRIGHT_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
         im = image.imread(SQUARE_UPRIGHT_FILE.format(*[c for tupl in coordinates for c in tupl]))
         _display_grayscale_image_hex(im)
     elif type == 'square rotated':
         coordinates = ((2, 11), (11, 2), (20, 11), (11, 20))
-        _create_square(SQUARE_ROTATED_FILE, *coordinates, BACKGROUND_COLOR_BLACK)
+        _create_square(SQUARE_ROTATED_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
         im = image.imread(SQUARE_ROTATED_FILE.format(*[c for tupl in coordinates for c in tupl]))
         _display_grayscale_image_hex(im)
     elif type == 'triangle upright':
         coordinates = ((2, 11), (5, 2), (9, 11))
-        _create_triangle(TRIANGLE_UPRIGHT_FILE, *coordinates, BACKGROUND_COLOR_BLACK)
+        _create_triangle(TRIANGLE_UPRIGHT_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
         im = image.imread(TRIANGLE_UPRIGHT_FILE.format(*[c for tupl in coordinates for c in tupl]))
         _display_grayscale_image_hex(im)
 
 
 def create_datasets():
-    """Create all datatset."""
+    """Create all datasets."""
     _prepare()
-    _create_upright_square_dataset(SQUARE_UPRIGHT_FILE, BACKGROUND_COLOR_BLACK)
-    _create_rotated_square_dataset(SQUARE_ROTATED_FILE, BACKGROUND_COLOR_BLACK)
-    _create_upright_triangle_dataset(TRIANGLE_UPRIGHT_FILE, BACKGROUND_COLOR_BLACK)
+
+    _create_upright_square_dataset(SQUARE_UPRIGHT_FILE, BACKGROUND_COLOR_WHITE)
+    _create_rotated_square_dataset(SQUARE_ROTATED_FILE, BACKGROUND_COLOR_WHITE)
+    _create_upright_triangle_dataset(TRIANGLE_UPRIGHT_FILE, BACKGROUND_COLOR_WHITE)
+
+    _create_upright_square_dataset(SQUARE_GRAY_LIGHT_FILE, BACKGROUND_COLOR_GRAY_LIGHT)
+    _create_upright_square_dataset(SQUARE_GRAY_DARK_FILE, BACKGROUND_COLOR_GRAY_DARK)
+    _create_upright_triangle_dataset(TRIANGLE_GRAY_LIGHT_FILE, BACKGROUND_COLOR_GRAY_LIGHT)
 
 
 def get_upright_dataset(test_set_pct: int, shuffle: bool = True):

@@ -25,6 +25,9 @@ BACKGROUND_COLOR = 255
 SQUARE_UPRIGHT = 'square-upright'
 SQUARE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_UPRIGHT,
                                          '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
+SQUARE_ROTATED = 'square-rotated'
+SQUARE_ROTATED_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_ROTATED,
+                                         '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
 SQUARE_SIDE = 10
 
 TRIANGLE_UPRIGHT = 'triangle-upright'
@@ -48,23 +51,20 @@ def _prepare():
     os.makedirs(IMAGE_DIRECTORY, exist_ok=True)
 
 
-def _create_square(base_name: str, top_left: Tuple[int, ...], top_right: Tuple[int, ...],
-                   bottom_left: Tuple[int, ...], bottom_right: Tuple[int, ...]):
+def _create_square(base_name: str, corner1: Tuple[int, ...], corner2: Tuple[int, ...],
+                   corner3: Tuple[int, ...], corner4: Tuple[int, ...]):
     """Create a square picture and save it.
 
     All coordinates are in the Pillow system: the top-left corner of the canvas is (0,0).
 
     Args:
         base_name (str): Base name for the file where the picture will be saved
-        top_left (Tuple[int, ...]): [x, y] coordinate for the top-left corner.
-        top_right (Tuple[int, ...]): [x, y] coordinate for the top-right corner.
-        bottom_left (Tuple[int, ...]): [x, y] coordinate for the bottom-left corner.
-        bottom_right (Tuple[int, ...]): [x, y] coordinate for the bottom-right corner.
+        corner1..4 (Tuple[int, ...]): [x, y] coordinate of each corner, in order.
     """
     im = Image.new(mode='L', size=(CANVAS_SIZE, CANVAS_SIZE), color=BACKGROUND_COLOR)
     draw = ImageDraw.Draw(im)
-    draw.polygon([top_left, top_right, bottom_right, bottom_left], outline=0)
-    im.save(base_name.format(*top_left, *top_right, *bottom_left, *bottom_right))
+    draw.polygon([corner1, corner2, corner3, corner4], outline=0)
+    im.save(base_name.format(*corner1, *corner2, *corner3, *corner4))
 
 
 def _create_triangle(base_name: str, vertex1: Tuple[int, ...], vertex2: Tuple[int, ...], vertex3: Tuple[int, ...]):
@@ -73,8 +73,8 @@ def _create_triangle(base_name: str, vertex1: Tuple[int, ...], vertex2: Tuple[in
     All coordinates are in the Pillow system: the top-left corner of the canvas is (0,0).
 
     Args:
-        base_name (str): Base name for the file where the picture will be saved
-        vertex1..3 (Tuple[int, ...]): [x, y] coordinate of each vertex
+        base_name (str): Base name for the file where the picture will be saved.
+        vertex1..3 (Tuple[int, ...]): [x, y] coordinate of each vertex, order.
     """
     im = Image.new(mode='L', size=(CANVAS_SIZE, CANVAS_SIZE), color=BACKGROUND_COLOR)
     draw = ImageDraw.Draw(im)
@@ -92,13 +92,25 @@ def _display_grayscale_image_hex(image_array):
 def create_upright_square_dataset():
     """Create a dataset of upright square iamges.
 
-    The range in the loops are set to have about the same number of squares and triangles.
-    """
+        The range in the loops are set to have about the same number of squares and triangles.
+        """
     for y in range(2, 48, 2):
         for x in range(2, 45, 3):
             right_x = x+SQUARE_SIDE-1
             bottom_y = y+SQUARE_SIDE-1
-            _create_square(SQUARE_UPRIGHT_FILE, (x, y), (right_x, y), (x, bottom_y), (right_x, bottom_y))
+            _create_square(SQUARE_UPRIGHT_FILE, (x, y), (right_x, y), (right_x, bottom_y), (x, bottom_y))
+
+
+def create_rotated_square_dataset():
+    """Create a dataset of rotated square iamges.
+
+    The range in the loops are set to have about the same number of squares and triangles.
+    """
+    for y in range(11, 48, 2):
+        for x in range(2, 45, 3):
+            middle_x = x+SQUARE_SIDE-1
+            _create_square(SQUARE_ROTATED_FILE, (x, y), (middle_x, y-SQUARE_SIDE+1),
+                           (x+2*SQUARE_SIDE-2, y), (middle_x, y+SQUARE_SIDE-1))
 
 
 def create_upright_triangle_dataset():
@@ -110,22 +122,35 @@ def create_upright_triangle_dataset():
                              (x+TRIANGLE_BASE-1, y))
 
 
-def test(square: bool):
+def test(type: str):
     """Test code to check that grayscale images are properly generated.
 
     It creates one image, then displays the pixel values (in hexadecimal), so we can visually
     inspect that the image type and pixels values are correct.
     """
-    if square:
-        coordinates = ((2, 2), (29, 2), (2, 29), (29, 29))
+    if type == 'square upright':
+        coordinates = ((2, 2), (29, 2), (29, 29), (2, 29))
         _create_square(SQUARE_UPRIGHT_FILE, *coordinates)
         im = image.imread(SQUARE_UPRIGHT_FILE.format(*[c for tupl in coordinates for c in tupl]))
         _display_grayscale_image_hex(im)
-    else:
+    elif type == 'square rotated':
+        coordinates = ((2, 11), (11, 2), (20, 11), (11, 20))
+        _create_square(SQUARE_ROTATED_FILE, *coordinates)
+        im = image.imread(SQUARE_ROTATED_FILE.format(*[c for tupl in coordinates for c in tupl]))
+        _display_grayscale_image_hex(im)
+    elif type == 'triangle upright':
         coordinates = ((2, 11), (5, 2), (9, 11))
         _create_triangle(TRIANGLE_UPRIGHT_FILE, *coordinates)
         im = image.imread(TRIANGLE_UPRIGHT_FILE.format(*[c for tupl in coordinates for c in tupl]))
         _display_grayscale_image_hex(im)
+
+
+def _get_images(file_name_pattern: str):
+    """Get a list of images from files as a NumPy array."""
+    files = glob.glob('{}{}{}*'.format(IMAGE_DIRECTORY, os.path.sep, file_name_pattern))
+    images = [image.imread(file) for file in files]
+    images_np = np.array(images)
+    return images_np
 
 
 def _get_dataset(file_name_pattern: str, label: int, test_set_pct: int, shuffle: bool):
@@ -137,9 +162,7 @@ def _get_dataset(file_name_pattern: str, label: int, test_set_pct: int, shuffle:
         test_set_pct (int): The percentage of images to use for the test set.
         shuffle (bool, optional): Shuffle the images before creating the test set. Defaults to True.
     """
-    files = glob.glob('{}{}{}*'.format(IMAGE_DIRECTORY, os.path.sep, file_name_pattern))
-    images = [image.imread(file) for file in files]
-    images_np = np.array(images)
+    images_np = _get_images(file_name_pattern)
     if shuffle:
         np.random.shuffle(images_np)
 
@@ -163,6 +186,15 @@ def get_square_upright_dataset(test_set_pct: int, shuffle: bool = True):
         shuffle (bool, optional): Shuffle the images before creating the test set. Defaults to True.
     """
     return _get_dataset(SQUARE_UPRIGHT, LABEL_SQUARE, test_set_pct, shuffle)
+
+
+def get_square_rotated_dataset():
+    """Create the rotated square train and test sets from the images in the directory.
+
+    This test set is not meant for training, just for prediction, thus it doesn't have a split nor
+    labels.
+    """
+    return _get_images(SQUARE_ROTATED)
 
 
 def get_triangle_upright_dataset(test_set_pct: int, shuffle: bool = True):
@@ -201,16 +233,17 @@ def get_upright_dataset(test_set_pct: int, shuffle: bool = True):
     return (trainset, trainlabel), (testset, testlabel)
 
 
+def get_class_labels():
+    """Returns the class names indexed by their values."""
+    return ['Square (upright)', 'Triangle (upright']
+
+
 if __name__ == "__main__":
     _prepare()
-    # test(True)
-    # test(False)
+    # test('square upright')
+    # test('square rotated')
+    # test('triangle upright')
+
     create_upright_square_dataset()
+    create_rotated_square_dataset()
     create_upright_triangle_dataset()
-
-    # (trs, trl), (tss, tsl) = get_square_upright_dataset(10)
-    # _display_grayscale_image_hex(trs[0])
-    # (trs, trl), (tss, tsl) = get_triangle_upright_dataset(10)
-    # _display_grayscale_image_hex(trs[0])
-
-    (trs, trl), (tss, tsl) = get_upright_dataset(10)

@@ -106,8 +106,8 @@ def create_rotated_square_dataset():
 
     The range in the loops are set to have about the same number of squares and triangles.
     """
-    for y in range(11, 48, 2):
-        for x in range(2, 45, 3):
+    for y in range(11, 48, 5):
+        for x in range(2, 45, 4):
             middle_x = x+SQUARE_SIDE-1
             _create_square(SQUARE_ROTATED_FILE, (x, y), (middle_x, y-SQUARE_SIDE+1),
                            (x+2*SQUARE_SIDE-2, y), (middle_x, y+SQUARE_SIDE-1))

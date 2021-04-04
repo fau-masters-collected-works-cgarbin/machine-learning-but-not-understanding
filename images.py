@@ -21,6 +21,8 @@ IMAGE_DIRECTORY = 'images'
 # Canvas height/width (all images are squares)
 CANVAS_SIZE = 64
 BACKGROUND_COLOR_BLACK = 255
+BACKGROUND_COLOR_GREEN = 181
+BACKGROUND_COLOR_BLACK = 138
 
 SQUARE_UPRIGHT = 'square-upright'
 SQUARE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_UPRIGHT,
@@ -202,6 +204,7 @@ def _test(type: str):
 
 
 def create_datasets():
+    """Create all datatset."""
     _prepare()
     _create_upright_square_dataset(SQUARE_UPRIGHT_FILE, BACKGROUND_COLOR_BLACK)
     _create_rotated_square_dataset(SQUARE_ROTATED_FILE, BACKGROUND_COLOR_BLACK)
@@ -244,7 +247,7 @@ def get_square_rotated_dataset():
 
 
 def get_class_labels():
-    """Returns the class names indexed by their values."""
+    """Return the class names indexed by their values."""
     return ['Square', 'Triangle']
 
 
@@ -255,6 +258,4 @@ if __name__ == "__main__":
     # _test('square rotated')
     # _test('triangle upright')
 
-    create_upright_square_dataset()
-    create_rotated_square_dataset()
-    create_upright_triangle_dataset()
+    create_datasets()

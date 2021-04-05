@@ -142,7 +142,7 @@ def _get_images(file_name_pattern: str):
     return images_np
 
 
-def _get_dataset(file_name_pattern: str, label: int, test_set_pct: int, shuffle: bool):
+def _get_dataset_from_files(file_name_pattern: str, label: int, test_set_pct: int, shuffle: bool):
     """Create train and test sets from the images in the directory, given the pattern.
 
     Args:
@@ -190,21 +190,23 @@ def _test(type: str):
         _display_grayscale_image_hex(im)
 
 
-def get_upright_dataset(test_set_pct: int, shuffle: bool = True):
-    """Create the combined dataset of upright squares and triangles from the images in the directory.
+def _get_dataset(square_template: str, triangle_template: str, test_set_pct: int, shuffle: bool = True):
+    """Create the combined dataset of squares and triangles, based on the given file name templates.
 
     This code it not very efficient. It create copies of images. It's ok for a small dataset. For
     a larger dataset we may want to work with the file names first and load the images after
     doing all the array operations.
 
     Args:
+        square_template (str): The template to select the files with square images.
+        triangle_template (str): The template to select the files with triangle images.
         test_set_pct (int): The percentage of images to use for the test set.
         shuffle (bool, optional): Shuffle the images before creating the test set. Defaults to True.
     """
-    (strainset, strainlabel), (stestset, stestlabel) = _get_dataset(
-        SQUARE_UPRIGHT, LABEL_SQUARE, test_set_pct, shuffle)
-    (ttrainset, ttrainlabel), (ttestset, ttestlabel) = _get_dataset(
-        TRIANGLE_UPRIGHT, LABEL_TRIANGLE, test_set_pct, shuffle)
+    (strainset, strainlabel), (stestset, stestlabel) = _get_dataset_from_files(
+        square_template, LABEL_SQUARE, test_set_pct, shuffle)
+    (ttrainset, ttrainlabel), (ttestset, ttestlabel) = _get_dataset_from_files(
+        triangle_template, LABEL_TRIANGLE, test_set_pct, shuffle)
 
     trainset = np.concatenate((strainset, ttrainset), axis=0)
     trainlabel = np.concatenate((strainlabel, ttrainlabel))
@@ -216,6 +218,16 @@ def get_upright_dataset(test_set_pct: int, shuffle: bool = True):
         trainset, trainlabel = utils.shuffle(trainset, trainlabel)
 
     return (trainset, trainlabel), (testset, testlabel)
+
+
+def get_upright_dataset(test_set_pct: int, shuffle: bool = True):
+    """Create the combined dataset of upright squares and triangles from the images in the directory.
+
+    Args:
+        test_set_pct (int): The percentage of images to use for the test set.
+        shuffle (bool, optional): Shuffle the images before creating the test set. Defaults to True.
+    """
+    return _get_dataset(SQUARE_UPRIGHT, TRIANGLE_UPRIGHT, test_set_pct, shuffle)
 
 
 def get_square_rotated_dataset():

@@ -169,26 +169,6 @@ def _get_dataset(file_name_pattern: str, label: int, test_set_pct: int, shuffle:
     return (train_set, train_labels), (test_set, test_labels)
 
 
-def _get_square_upright_dataset(test_set_pct: int, shuffle: bool = True):
-    """Create the upright square train and test sets from the images in the directory.
-
-    Args:
-        test_set_pct (int): The percentage of images to use for the test set.
-        shuffle (bool, optional): Shuffle the images before creating the test set. Defaults to True.
-    """
-    return _get_dataset(SQUARE_UPRIGHT, LABEL_SQUARE, test_set_pct, shuffle)
-
-
-def _get_triangle_upright_dataset(test_set_pct: int, shuffle: bool = True):
-    """Create the upright triangle train and test sets from the images in the directory.
-
-    Args:
-        test_set_pct (int): The percentage of images to use for the test set.
-        shuffle (bool, optional): Shuffle the images before creating the test set. Defaults to True.
-    """
-    return _get_dataset(TRIANGLE_UPRIGHT, LABEL_TRIANGLE, test_set_pct, shuffle)
-
-
 def _test(type: str):
     """Test code to check that grayscale images are properly generated.
 
@@ -236,8 +216,10 @@ def get_upright_dataset(test_set_pct: int, shuffle: bool = True):
         test_set_pct (int): The percentage of images to use for the test set.
         shuffle (bool, optional): Shuffle the images before creating the test set. Defaults to True.
     """
-    (strainset, strainlabel), (stestset, stestlabel) = _get_square_upright_dataset(test_set_pct, shuffle)
-    (ttrainset, ttrainlabel), (ttestset, ttestlabel) = _get_triangle_upright_dataset(test_set_pct, shuffle)
+    (strainset, strainlabel), (stestset, stestlabel) = _get_dataset(
+        SQUARE_UPRIGHT, LABEL_SQUARE, test_set_pct, shuffle)
+    (ttrainset, ttrainlabel), (ttestset, ttestlabel) = _get_dataset(
+        TRIANGLE_UPRIGHT, LABEL_TRIANGLE, test_set_pct, shuffle)
 
     trainset = np.concatenate((strainset, ttrainset), axis=0)
     trainlabel = np.concatenate((strainlabel, ttrainlabel))

@@ -16,34 +16,32 @@ import glob
 import numpy as np
 from sklearn import utils
 
-# The directory where the generated images are stored
-IMAGE_DIRECTORY = 'images'
 # Canvas height/width (all images are squares)
 CANVAS_SIZE = 64
+
 BACKGROUND_COLOR_WHITE = 255
 BACKGROUND_COLOR_GRAY_LIGHT = 128
 BACKGROUND_COLOR_GRAY_DARK = 64
 
+# The directory where the generated images are stored
+IMAGE_DIRECTORY = 'images'
+
+SQUARE_FILE_TEMPLATE = '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp'
 SQUARE_UPRIGHT = 'square-upright'
-SQUARE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_UPRIGHT,
-                                         '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
+SQUARE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_UPRIGHT, SQUARE_FILE_TEMPLATE)
 SQUARE_ROTATED = 'square-rotated'
-SQUARE_ROTATED_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_ROTATED,
-                                         '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
+SQUARE_ROTATED_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_ROTATED, SQUARE_FILE_TEMPLATE)
 SQUARE_GRAY_DARK = 'square-gray-dark'
-SQUARE_GRAY_DARK_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_GRAY_DARK,
-                                           '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
+SQUARE_GRAY_DARK_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_GRAY_DARK, SQUARE_FILE_TEMPLATE)
 SQUARE_GRAY_LIGHT = 'square-gray-light'
-SQUARE_GRAY_LIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_GRAY_LIGHT,
-                                            '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
+SQUARE_GRAY_LIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_GRAY_LIGHT, SQUARE_FILE_TEMPLATE)
 SQUARE_SIDE = 10
 
+TRIANGLE_FILE_TEMPLATE = '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp'
 TRIANGLE_UPRIGHT = 'triangle-upright'
-TRIANGLE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, TRIANGLE_UPRIGHT,
-                                           '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
+TRIANGLE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, TRIANGLE_UPRIGHT, TRIANGLE_FILE_TEMPLATE)
 TRIANGLE_GRAY_LIGHT = 'triangle-gray-dark'
-TRIANGLE_GRAY_LIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, TRIANGLE_GRAY_LIGHT,
-                                              '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp')
+TRIANGLE_GRAY_LIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, TRIANGLE_GRAY_LIGHT, TRIANGLE_FILE_TEMPLATE)
 TRIANGLE_HEIGHT = 20
 TRIANGLE_BASE = 21
 
@@ -192,19 +190,6 @@ def _test(type: str):
         _display_grayscale_image_hex(im)
 
 
-def create_datasets():
-    """Create all datasets."""
-    _prepare()
-
-    _create_upright_square_dataset(SQUARE_UPRIGHT_FILE, BACKGROUND_COLOR_WHITE)
-    _create_rotated_square_dataset(SQUARE_ROTATED_FILE, BACKGROUND_COLOR_WHITE)
-    _create_upright_triangle_dataset(TRIANGLE_UPRIGHT_FILE, BACKGROUND_COLOR_WHITE)
-
-    _create_upright_square_dataset(SQUARE_GRAY_LIGHT_FILE, BACKGROUND_COLOR_GRAY_LIGHT)
-    _create_upright_square_dataset(SQUARE_GRAY_DARK_FILE, BACKGROUND_COLOR_GRAY_DARK)
-    _create_upright_triangle_dataset(TRIANGLE_GRAY_LIGHT_FILE, BACKGROUND_COLOR_GRAY_LIGHT)
-
-
 def get_upright_dataset(test_set_pct: int, shuffle: bool = True):
     """Create the combined dataset of upright squares and triangles from the images in the directory.
 
@@ -245,6 +230,19 @@ def get_square_rotated_dataset():
 def get_class_labels():
     """Return the class names indexed by their values."""
     return ['Square', 'Triangle']
+
+
+def create_datasets():
+    """Create all datasets."""
+    _prepare()
+
+    _create_upright_square_dataset(SQUARE_UPRIGHT_FILE, BACKGROUND_COLOR_WHITE)
+    _create_rotated_square_dataset(SQUARE_ROTATED_FILE, BACKGROUND_COLOR_WHITE)
+    _create_upright_triangle_dataset(TRIANGLE_UPRIGHT_FILE, BACKGROUND_COLOR_WHITE)
+
+    _create_upright_square_dataset(SQUARE_GRAY_LIGHT_FILE, BACKGROUND_COLOR_GRAY_LIGHT)
+    _create_upright_square_dataset(SQUARE_GRAY_DARK_FILE, BACKGROUND_COLOR_GRAY_DARK)
+    _create_upright_triangle_dataset(TRIANGLE_GRAY_LIGHT_FILE, BACKGROUND_COLOR_GRAY_LIGHT)
 
 
 if __name__ == "__main__":

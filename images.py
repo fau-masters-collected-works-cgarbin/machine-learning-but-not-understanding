@@ -155,7 +155,7 @@ def _get_dataset_from_files(file_name_pattern: str, label: int, test_set_pct: in
     if shuffle:
         np.random.shuffle(images_np)
 
-    test_set_size = len(images_np) * test_set_pct // 100
+    test_set_size = images_np.shape[0] * test_set_pct // 100
     train_set = images_np[test_set_size:]
     test_set = images_np[:test_set_size]
 

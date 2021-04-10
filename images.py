@@ -31,17 +31,17 @@ SQUARE_UPRIGHT = 'square-upright'
 SQUARE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_UPRIGHT, SQUARE_FILE_TEMPLATE)
 SQUARE_ROTATED = 'square-rotated'
 SQUARE_ROTATED_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_ROTATED, SQUARE_FILE_TEMPLATE)
-SQUARE_GRAY_LIGHT = 'square-gray-light'
-SQUARE_GRAY_LIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_GRAY_LIGHT, SQUARE_FILE_TEMPLATE)
 SQUARE_GRAY_DARK = 'square-gray-dark'
 SQUARE_GRAY_DARK_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_GRAY_DARK, SQUARE_FILE_TEMPLATE)
+SQUARE_GRAY_LIGHT = 'square-gray-light'
+SQUARE_GRAY_LIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_GRAY_LIGHT, SQUARE_FILE_TEMPLATE)
 SQUARE_SIDE = 10
 
 TRIANGLE_FILE_TEMPLATE = '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp'
 TRIANGLE_UPRIGHT = 'triangle-upright'
 TRIANGLE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, TRIANGLE_UPRIGHT, TRIANGLE_FILE_TEMPLATE)
-TRIANGLE_GRAY_LIGHT = 'triangle-gray-light'
-TRIANGLE_GRAY_LIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, TRIANGLE_GRAY_LIGHT, TRIANGLE_FILE_TEMPLATE)
+TRIANGLE_GRAY_DARK = 'triangle-gray-dark'
+TRIANGLE_GRAY_DARK_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, TRIANGLE_GRAY_DARK, TRIANGLE_FILE_TEMPLATE)
 TRIANGLE_HEIGHT = 20
 TRIANGLE_BASE = 21
 
@@ -240,23 +240,23 @@ def get_square_rotated_dataset():
 
 
 def get_color_dataset(test_set_pct: int, shuffle: bool = True):
-    """Create the combined dataset of dark gray squares and light gray triangles from the images in
+    """Create the combined dataset of light gray squares and dark gray triangles from the images in
     the directory.
 
     Args:
         test_set_pct (int): The percentage of images to use for the test set.
         shuffle (bool, optional): Shuffle the images before creating the test set. Defaults to True.
     """
-    return _get_dataset(SQUARE_GRAY_DARK, TRIANGLE_GRAY_LIGHT, test_set_pct, shuffle)
+    return _get_dataset(SQUARE_GRAY_LIGHT, TRIANGLE_GRAY_DARK, test_set_pct, shuffle)
 
 
-def get_square_light_gray_dataset():
-    """Create the light gray square set from the images in the directory.
+def get_square_dark_gray_dataset():
+    """Create the dark gray square set from the images in the directory.
 
     This test set is not meant for training, just for prediction, thus it doesn't have a split nor
     labels.
     """
-    return _get_images(SQUARE_GRAY_LIGHT)
+    return _get_images(SQUARE_GRAY_DARK)
 
 
 def get_class_labels():
@@ -274,7 +274,7 @@ def create_datasets():
 
     _create_upright_square_dataset(SQUARE_GRAY_LIGHT_FILE, BACKGROUND_COLOR_GRAY_LIGHT)
     _create_upright_square_dataset(SQUARE_GRAY_DARK_FILE, BACKGROUND_COLOR_GRAY_DARK)
-    _create_upright_triangle_dataset(TRIANGLE_GRAY_LIGHT_FILE, BACKGROUND_COLOR_GRAY_LIGHT)
+    _create_upright_triangle_dataset(TRIANGLE_GRAY_DARK_FILE, BACKGROUND_COLOR_GRAY_DARK)
 
 
 if __name__ == "__main__":

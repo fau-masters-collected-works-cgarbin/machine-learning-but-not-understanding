@@ -167,29 +167,6 @@ def _get_dataset_from_files(file_name_pattern: str, label: int, test_set_pct: in
     return (train_set, train_labels), (test_set, test_labels)
 
 
-def _test(type: str):
-    """Test code to check that grayscale images are properly generated.
-
-    It creates one image, then displays the pixel values (in hexadecimal), so we can visually
-    inspect that the image type and pixels values are correct.
-    """
-    if type == 'square upright':
-        coordinates = ((2, 2), (29, 2), (29, 29), (2, 29))
-        _create_square(SQUARE_UPRIGHT_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
-        im = image.imread(SQUARE_UPRIGHT_FILE.format(*[c for tupl in coordinates for c in tupl]))
-        _display_grayscale_image_hex(im)
-    elif type == 'square rotated':
-        coordinates = ((2, 11), (11, 2), (20, 11), (11, 20))
-        _create_square(SQUARE_ROTATED_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
-        im = image.imread(SQUARE_ROTATED_FILE.format(*[c for tupl in coordinates for c in tupl]))
-        _display_grayscale_image_hex(im)
-    elif type == 'triangle upright':
-        coordinates = ((2, 11), (5, 2), (9, 11))
-        _create_triangle(TRIANGLE_UPRIGHT_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
-        im = image.imread(TRIANGLE_UPRIGHT_FILE.format(*[c for tupl in coordinates for c in tupl]))
-        _display_grayscale_image_hex(im)
-
-
 def _get_dataset(square_template: str, triangle_template: str, test_set_pct: int, shuffle: bool = True):
     """Create the combined dataset of squares and triangles, based on the given file name templates.
 
@@ -218,6 +195,29 @@ def _get_dataset(square_template: str, triangle_template: str, test_set_pct: int
         trainset, trainlabel = utils.shuffle(trainset, trainlabel)
 
     return (trainset, trainlabel), (testset, testlabel)
+
+
+def _test(type: str):
+    """Test code to check that grayscale images are properly generated.
+
+    It creates one image, then displays the pixel values (in hexadecimal), so we can visually
+    inspect that the image type and pixels values are correct.
+    """
+    if type == 'square upright':
+        coordinates = ((2, 2), (29, 2), (29, 29), (2, 29))
+        _create_square(SQUARE_UPRIGHT_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
+        im = image.imread(SQUARE_UPRIGHT_FILE.format(*[c for tupl in coordinates for c in tupl]))
+        _display_grayscale_image_hex(im)
+    elif type == 'square rotated':
+        coordinates = ((2, 11), (11, 2), (20, 11), (11, 20))
+        _create_square(SQUARE_ROTATED_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
+        im = image.imread(SQUARE_ROTATED_FILE.format(*[c for tupl in coordinates for c in tupl]))
+        _display_grayscale_image_hex(im)
+    elif type == 'triangle upright':
+        coordinates = ((2, 11), (5, 2), (9, 11))
+        _create_triangle(TRIANGLE_UPRIGHT_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
+        im = image.imread(TRIANGLE_UPRIGHT_FILE.format(*[c for tupl in coordinates for c in tupl]))
+        _display_grayscale_image_hex(im)
 
 
 def get_upright_dataset(test_set_pct: int, shuffle: bool = True):
@@ -262,6 +262,23 @@ def get_square_dark_gray_dataset():
 def get_class_labels():
     """Return the class names indexed by their values."""
     return ['Square', 'Triangle']
+
+
+def prepare_set(data, labels=None):
+    """Prepare a set to be used in training.
+
+    - Normalize the pixel range to 0.0-1.0 to improve training
+    - Reshape the dataset to match the neural network input layer
+    """
+
+    data = data / 255.0
+
+    data = np.reshape(data, (-1, CANVAS_SIZE, CANVAS_SIZE, 1))
+
+    if labels is not None:
+        labels = np.reshape(labels, (-1, 1))
+
+    return data, labels
 
 
 def create_datasets():

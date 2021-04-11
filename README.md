@@ -1,6 +1,6 @@
 # Machine learning, but not understanding
 
-This repository explores some of concepts from the book "Artifical Intelligence, a guide for thinking humans", by Melaine Mitchell.
+This repository explores some of the concepts from the book "Artificial Intelligence, a guide for thinking humans", by Melaine Mitchell.
 
 More specifically, it shows with some experiments that despite calling it "machine learning", the machines are not really "learning" in the sense that we, humans, use the term.
 
@@ -12,7 +12,7 @@ An important consequence of this "learning" process:
 
 > The machine learns what it observes in the data rather than what you (the human) might observe. If there are statistical associations in the training data, even if irrelevant to the task at hand, the machine will happily learn those instead of what you wanted it to learn.
 
-The [Jupyter notebook in this repository](machine_learning_but_not_understanding.ipynb) demonstrates how neural networks can fail beause they are not in fact "learning".
+The [Jupyter notebook in this repository](machine_learning_but_not_understanding.ipynb) demonstrates how neural networks can fail because they are not in fact "learning".
 
 If you are interested only in the concepts, see this [blog post](https://cgarbin.github.io/machine-learning-but-not-understanding/).
 

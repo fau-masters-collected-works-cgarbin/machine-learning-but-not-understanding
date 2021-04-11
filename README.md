@@ -2,7 +2,7 @@
 
 This repository explores some of concepts from the book "Artifical Intelligence, a guide for thinking humans", by Melaine Mitchell.
 
-More specifically, it shows with some experiments that despite calling it "machine learning", the machines are not really in the sense that we, humans, understand it.
+More specifically, it shows with some experiments that despite calling it "machine learning", the machines are not really "learning" in the sense that we, humans, use the term.
 
 > "Learning in neural networks simply consists in gradually modifying the weights on connections so that each output’s error gets as close to 0 as possible on all training examples."
 

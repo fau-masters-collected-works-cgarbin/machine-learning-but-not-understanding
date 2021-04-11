@@ -240,8 +240,7 @@ def get_square_rotated_dataset():
 
 
 def get_color_dataset(test_set_pct: int, shuffle: bool = True):
-    """Create the combined dataset of light gray squares and dark gray triangles from the images in
-    the directory.
+    """Create the dataset of light gray squares and dark gray triangles from the images in the directory.
 
     Args:
         test_set_pct (int): The percentage of images to use for the test set.
@@ -270,7 +269,6 @@ def prepare_set(data, labels=None):
     - Normalize the pixel range to 0.0-1.0 to improve training
     - Reshape the dataset to match the neural network input layer
     """
-
     data = data / 255.0
 
     data = np.reshape(data, (-1, CANVAS_SIZE, CANVAS_SIZE, 1))
@@ -297,6 +295,7 @@ def create_datasets():
 if __name__ == "__main__":
     _prepare()
 
+    # Uncomment to test teh image generation code
     # _test('square upright')
     # _test('square rotated')
     # _test('triangle upright')

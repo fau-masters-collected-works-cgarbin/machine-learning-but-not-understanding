@@ -33,7 +33,7 @@ Python 3.x before proceeding. The official Python download site is
 
 From this point on, the instructions assume that **Python 3 is installed as `python3`**.
 
-### Clone the repository
+### Cloning the repository
 
 ```bash
 git clone https://github.com/fau-masters-collected-works-cgarbin/machine-learning-but-not-understanding.git
@@ -41,17 +41,27 @@ git clone https://github.com/fau-masters-collected-works-cgarbin/machine-learnin
 
 The repository is now in the directory `machine-learning-but-not-understanding`.
 
-### Create a Python virtual environment
+### Creating a Python virtual environment
 
 Execute these commands to create and activate a [virtual environment]((https://docs.python.org/3/tutorial/venv.html)) for the project:
 
-1. `cd machine-learning-but-not-understanding` (if you are not yet in the project directory)
-1. `python3 -m venv env`
-1. `source env/bin/activate` (or in Windows: `env\Scripts\activate.bat`)
+```bash
+#  switch to the directory where the cloned repository is
+cd machine-learning-but-not-understanding
 
-### Install the dependencies
+python3 -m venv env
+source env/bin/activate
+# or in Windows: env\Scripts\activate.bat
+```
 
-`pip install -r requirements.txt`
+### Installing the dependencies
+
+It's important to update `pip` first. Older `pip` versions fail to install Tensorflow.
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt`
+```
 
 ## Running the code
 

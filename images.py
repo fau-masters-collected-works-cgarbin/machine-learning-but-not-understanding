@@ -29,8 +29,8 @@ IMAGE_DIRECTORY = 'images'
 SQUARE_FILE_TEMPLATE = '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}--{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}.bmp'
 SQUARE_UPRIGHT = 'square-upright'
 SQUARE_UPRIGHT_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_UPRIGHT, SQUARE_FILE_TEMPLATE)
-SQUARE_ROTATED = 'square-rotated'
-SQUARE_ROTATED_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_ROTATED, SQUARE_FILE_TEMPLATE)
+SQUARE_LARGE = 'square-large'
+SQUARE_LARGE_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_LARGE, SQUARE_FILE_TEMPLATE)
 SQUARE_GRAY_DARK = 'square-gray-dark'
 SQUARE_GRAY_DARK_FILE = '{}{}{}-{}'.format(IMAGE_DIRECTORY, os.path.sep, SQUARE_GRAY_DARK, SQUARE_FILE_TEMPLATE)
 SQUARE_GRAY_LIGHT = 'square-gray-light'
@@ -113,16 +113,15 @@ def _create_upright_square_dataset(file_pattern: str, background: int):
                            background)
 
 
-def _create_rotated_square_dataset(file_pattern: str, background: int):
-    """Create a dataset of rotated square iamges.
-
-    The range in the loops are set to have about the same number of squares and triangles.
-    """
-    for y in range(11, 48, 5):
-        for x in range(2, 45, 4):
-            middle_x = x+SQUARE_SIDE-1
-            _create_square(file_pattern, (x, y), (middle_x, y-SQUARE_SIDE+1),
-                           (x+2*SQUARE_SIDE-2, y), (middle_x, y+SQUARE_SIDE-1), background)
+def _create_large_square_dataset(file_pattern: str, background: int):
+    """Create a dataset of large square iamges."""
+    side = SQUARE_SIDE*2
+    for y in range(2, 24, 2):
+        for x in range(2, 22, 3):
+            right_x = x+side-1
+            bottom_y = y+side-1
+            _create_square(file_pattern, (x, y), (right_x, y), (right_x, bottom_y), (x, bottom_y),
+                           background)
 
 
 def _create_upright_triangle_dataset(file_pattern: str, background: int):
@@ -208,10 +207,10 @@ def _test(type: str):
         _create_square(SQUARE_UPRIGHT_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
         im = image.imread(SQUARE_UPRIGHT_FILE.format(*[c for tupl in coordinates for c in tupl]))
         _display_grayscale_image_hex(im)
-    elif type == 'square rotated':
+    elif type == 'square large':
         coordinates = ((2, 11), (11, 2), (20, 11), (11, 20))
-        _create_square(SQUARE_ROTATED_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
-        im = image.imread(SQUARE_ROTATED_FILE.format(*[c for tupl in coordinates for c in tupl]))
+        _create_square(SQUARE_LARGE_FILE, *coordinates, BACKGROUND_COLOR_WHITE)
+        im = image.imread(SQUARE_LARGE_FILE.format(*[c for tupl in coordinates for c in tupl]))
         _display_grayscale_image_hex(im)
     elif type == 'triangle upright':
         coordinates = ((2, 11), (5, 2), (9, 11))
@@ -230,13 +229,13 @@ def get_upright_dataset(test_set_pct: int, shuffle: bool = True):
     return _get_dataset(SQUARE_UPRIGHT, TRIANGLE_UPRIGHT, test_set_pct, shuffle)
 
 
-def get_square_rotated_dataset():
-    """Create the rotated square set from the images in the directory.
+def get_square_large_dataset():
+    """Create the large square set from the images in the directory.
 
     This test set is not meant for training, just for prediction, thus it doesn't have a split nor
     labels.
     """
-    return _get_images(SQUARE_ROTATED)
+    return _get_images(SQUARE_LARGE)
 
 
 def get_color_dataset(test_set_pct: int, shuffle: bool = True):
@@ -284,7 +283,7 @@ def create_datasets():
     _prepare()
 
     _create_upright_square_dataset(SQUARE_UPRIGHT_FILE, BACKGROUND_COLOR_WHITE)
-    _create_rotated_square_dataset(SQUARE_ROTATED_FILE, BACKGROUND_COLOR_WHITE)
+    _create_large_square_dataset(SQUARE_LARGE_FILE, BACKGROUND_COLOR_WHITE)
     _create_upright_triangle_dataset(TRIANGLE_UPRIGHT_FILE, BACKGROUND_COLOR_WHITE)
 
     _create_upright_square_dataset(SQUARE_GRAY_LIGHT_FILE, BACKGROUND_COLOR_GRAY_LIGHT)
@@ -297,7 +296,7 @@ if __name__ == "__main__":
 
     # Uncomment to test teh image generation code
     # _test('square upright')
-    # _test('square rotated')
+    # _test('square large')
     # _test('triangle upright')
 
     create_datasets()

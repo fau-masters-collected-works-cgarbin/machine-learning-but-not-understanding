@@ -60,7 +60,7 @@ It's important to update `pip` first. Older `pip` versions fail to install Tenso
 
 ```bash
 pip install --upgrade pip
-pip install -r requirements.txt`
+pip install -r requirements.txt
 ```
 
 ## Running the code

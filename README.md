@@ -43,7 +43,7 @@ The repository is now in the directory `machine-learning-but-not-understanding`.
 
 ### Creating a Python virtual environment
 
-Execute these commands to create and activate a [virtual environment]((https://docs.python.org/3/tutorial/venv.html)) for the project:
+Execute these commands to create and activate a [virtual environment](https://docs.python.org/3/tutorial/venv.html) for the project:
 
 ```bash
 #  switch to the directory where the cloned repository is

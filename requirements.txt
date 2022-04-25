@@ -3,10 +3,10 @@ Pillow==9.1.*
 tensorflow==2.8.*
 # Tensorflow will also install NumPy, picking a compatible version
 #numpy==
-scikit-learn==0.24.*
+scikit-learn==1.0.*
 
 matplotlib==3.5.*
-jupyterlab==3.0.*
+jupyterlab==3.3.*
 
 # linters
 autopep8

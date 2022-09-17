@@ -1,6 +1,6 @@
 # Machine learning, but not understanding
 
-This repository explores some of the concepts from the book "Artificial Intelligence, a guide for thinking humans", by Melaine Mitchell.
+This repository explores some of the concepts from the book "Artificial Intelligence, a guide for thinking humans", by Melanie Mitchell.
 
 More specifically, it shows with some experiments that despite calling it "machine learning", the machines are not really "learning" in the sense that we, humans, use the term.
 

@@ -1,4 +1,4 @@
-Pillow==9.2.*
+Pillow==9.3.*
 
 tensorflow==2.11.*
 # Tensorflow will also install NumPy, picking a compatible version
